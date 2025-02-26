@@ -2,9 +2,9 @@ from PIL import Image
 import streamlit as st
 from helper.services import ktp_extraction
 
-azure_openai_api_version = "2024-06-01"
-azure_openai_key = "fc77bbae85b248348abd91744125fa47"
-endpoint_4o_mini = "https://azureopenai-haviz.openai.azure.com/openai/deployments/gpt-4o-mini/chat/completions?api-version=2024-02-15-preview"
+azure_openai_api_version = st.secrets["AZURE_OPENAI_API_VERSION"]
+azure_openai_key = st.secrets["AZURE_OPENAI_KEY"]
+endpoint_4o_mini = st.secrets["GPT4O_MINI_ENDPOINT"] 
 
 # Set page configuration
 st.set_page_config(
