@@ -96,7 +96,7 @@ def ktp_extraction(model, azure_openai_key, azure_openai_chat_endpoint):
         d.metric(label="Output Tokens", value=completion_tokens, border=True)
 
         try:
-            filename = 'result/ktp.csv'
+            filename = 'results/ktp.csv'
             df_existing = pd.read_csv(filename)
             df_new = pd.DataFrame([[uploaded_file.name,model_version, total_cost, total_time, prompt_tokens, completion_tokens, total_tokens]], columns=df_existing.columns)
             pd.concat([df_existing, df_new], ignore_index=True).to_csv(filename, index=False)
