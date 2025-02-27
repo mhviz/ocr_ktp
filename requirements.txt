@@ -3,3 +3,4 @@ Pillow==11.1.0
 pypdfium2==4.30.0
 Requests==2.32.3
 streamlit==1.41.0
+

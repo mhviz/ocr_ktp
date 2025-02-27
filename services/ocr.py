@@ -7,9 +7,8 @@ from datetime import datetime
 from PIL import Image
 import pypdfium2 as pdfium
 from io import BytesIO
-from helper.cost_calculations import calculate_aoai_cost
-from helper.model_inferences import aoai_llm_inference
-
+from helpers.cost_calculations import calculate_aoai_cost
+from helpers.model_inferences import aoai_llm_inference
 
 prompt = """Extract information from the document and convert it into a JSON-formatted dictionary with the following keys: provinsi, kabupaten_kota, nik, nama, tempat_tgl_lahir, jenis_kelamin, gol_darah, alamat, rt_rw, kel_desa, kecamatan, agama, status_perkawinan, pekerjaan, kewarganegaraan, berlaku_hingga, tanggal_aktif. Include the city or regency name in the kabupaten_kota value, e.g., "Kota Lhokseumawe" or "Kabupaten Tuban." For gol_darah, use values A, B, AB, O, or None if the value is '-' or other. The tanggal_aktif is the date below the photo on the ID, while berlaku_hingga is the date on the bottom left of the photo. Return the result as a JSON dictionary."""
 
@@ -96,10 +95,10 @@ def ktp_extraction(model, azure_openai_key, azure_openai_chat_endpoint):
         c.metric(label="Cost ($)", value=str(total_cost), border=True)
         d.metric(label="Output Tokens", value=completion_tokens, border=True)
 
-        # try:
-        #     filename = 'result/ktp.csv'
-        #     df_existing = pd.read_csv(filename)
-        #     df_new = pd.DataFrame([[uploaded_file.name,model_version, total_cost, total_time, prompt_tokens, completion_tokens, total_tokens]], columns=df_existing.columns)
-        #     pd.concat([df_existing, df_new], ignore_index=True).to_csv(filename, index=False)
-        # except:
-        #     pass
+        try:
+            filename = 'result/ktp.csv'
+            df_existing = pd.read_csv(filename)
+            df_new = pd.DataFrame([[uploaded_file.name,model_version, total_cost, total_time, prompt_tokens, completion_tokens, total_tokens]], columns=df_existing.columns)
+            pd.concat([df_existing, df_new], ignore_index=True).to_csv(filename, index=False)
+        except:
+            pass

@@ -1,6 +1,6 @@
 from PIL import Image
 import streamlit as st
-from helper.services import ktp_extraction
+from services.ocr import ktp_extraction
 
 azure_openai_api_version = st.secrets["AZURE_OPENAI_API_VERSION"]
 azure_openai_key = st.secrets["AZURE_OPENAI_KEY"]

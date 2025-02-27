@@ -1,5 +1,4 @@
 # OCR KTP
-
 ## Overview
 OCR project to extract data from Indonesian ID cards (KTP) and organize it into a structured key-value format."
 

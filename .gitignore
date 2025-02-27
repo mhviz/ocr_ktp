@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
-__pycache__
+services/__pycache__/
+helpers/__pycache__/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -136,6 +137,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.streamlit/secrets.toml
 
 # Spyder project settings
 .spyderproject
