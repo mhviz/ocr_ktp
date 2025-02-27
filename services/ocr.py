@@ -39,8 +39,7 @@ def ktp_extraction(model, azure_openai_key, azure_openai_chat_endpoint):
         if uploaded_file is not None:
             caption_text = "Uploaded Image" if file_type != 'pdf' else "Uploaded PDF"
             st.image(image, caption=caption_text, use_container_width=True)
-
-    extract_button = st.button("Extract KTP", icon="🔎")
+            extract_button = st.button("Extract KTP", icon="🔎")
     
     if extract_button: 
         start_time = datetime.now()
