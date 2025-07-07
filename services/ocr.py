@@ -12,7 +12,7 @@ from helpers.model_inferences import aoai_llm_inference
 
 prompt = """Extract information from the document and convert it into a JSON-formatted dictionary with the following keys: provinsi, kabupaten_kota, nik, nama, tempat_tgl_lahir, jenis_kelamin, gol_darah, alamat, rt_rw, kel_desa, kecamatan, agama, status_perkawinan, pekerjaan, kewarganegaraan, berlaku_hingga, tanggal_aktif. Include the city or regency name in the kabupaten_kota value, e.g., "Kota Lhokseumawe" or "Kabupaten Tuban." For gol_darah, use values A, B, AB, O, or None if the value is '-' or other. The tanggal_aktif is the date below the photo on the ID, while berlaku_hingga is the date on the bottom left of the photo. Return the result as a JSON dictionary."""
 
-def ktp_extraction(model, azure_openai_key, azure_openai_chat_endpoint):
+def ktp_extraction(model, client):
     
     col1, col2 = st.columns(2)
     with col1:
@@ -46,7 +46,7 @@ def ktp_extraction(model, azure_openai_key, azure_openai_chat_endpoint):
         start_time = datetime.now()
         with st.spinner("Extracting ..."):
             try:
-                results = aoai_llm_inference(prompt, encode_data, azure_openai_key, azure_openai_chat_endpoint)
+                results = aoai_llm_inference(prompt, encode_data, client, model)
                 total_time = round((datetime.now() - start_time).total_seconds(),2)
             except:
                 st.write("Failed to make the request. Please try again. Don't forget to upload a document")
@@ -55,7 +55,7 @@ def ktp_extraction(model, azure_openai_key, azure_openai_chat_endpoint):
         st.subheader('Result')
         tab_json, tab_table = st.tabs(["JSON", "TABLE"])
         with tab_table:
-            result_tab1 = results["choices"][0]["message"]["content"]
+            result_tab1 = results.choices[0].message.content
             print(result_tab1)  
 
             try:

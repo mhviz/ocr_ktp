@@ -1,10 +1,13 @@
+import os
 from PIL import Image
 import streamlit as st
 from services.ocr import ktp_extraction
+from dotenv import load_dotenv
+load_dotenv()
 
-azure_openai_api_version = st.secrets["AZURE_OPENAI_API_VERSION"]
-azure_openai_key = st.secrets["AZURE_OPENAI_KEY"]
-endpoint_4o_mini = st.secrets["GPT4O_MINI_ENDPOINT"] 
+azure_openai_api_version = os.getenv("MODEL_gpt_41_mini_APIVERSION")
+azure_openai_key = os.getenv("MODEL_gpt_41_mini_KEY")
+endpoint = os.getenv("MODEL_gpt_41_mini_APIVERSION")
 
 # Set page configuration
 st.set_page_config(
@@ -28,11 +31,11 @@ def main():
     menu = st.sidebar.radio('MENU', ['KTP Extraction'], label_visibility='hidden')
     
     if menu == 'KTP Extraction':
-        model = st.sidebar.selectbox('Select Model', ['gpt-4o-mini'], label_visibility='visible')
-        if model == 'gpt-4o-mini':
+        model = st.sidebar.selectbox('Select Model', ['gpt-4.1-mini'], label_visibility='visible')
+        if model == 'gpt-4.1-mini':
             st.header("KTP Extraction")
             st.divider()
-            ktp_extraction(model, azure_openai_key, endpoint_4o_mini)
+            ktp_extraction(model, azure_openai_key, endpoint)
 
 if __name__ == "__main__":
     main()

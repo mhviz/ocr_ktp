@@ -7,6 +7,9 @@ def calculate_aoai_cost(model, prompt_tokens, completion_tokens):
     elif model == 'gpt-4o-mini':
         input_price_per_million = 0.15
         output_price_per_million = 0.60
+    elif model == 'gpt-4.1-mini':
+        input_price_per_million = 0.40
+        output_price_per_million = 1.60
 
     # Convert pricing to per token
     input_price_per_token = input_price_per_million / 1_000_000

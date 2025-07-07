@@ -13,7 +13,7 @@ OCR project to extract data from Indonesian ID cards (KTP) and organize it into 
 
 2. **Configure Environment**
 
-   Set up your environment by configuring secrets.toml file to match the resources you have available.
+   Set up your environment by configuring .env file to match the resources you have available.
 
 3. **Simulate Using Streamlit**
 
