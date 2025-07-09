@@ -1,13 +1,23 @@
 import os
 from PIL import Image
+from openai import AzureOpenAI
 import streamlit as st
 from services.ocr import ktp_extraction
 from dotenv import load_dotenv
 load_dotenv()
 
-azure_openai_api_version = os.getenv("MODEL_gpt_41_mini_APIVERSION")
-azure_openai_key = os.getenv("MODEL_gpt_41_mini_KEY")
-endpoint = os.getenv("MODEL_gpt_41_mini_APIVERSION")
+deployment = "gpt-4.1-mini"
+if deployment == "gpt-4.1-mini":
+    secrets_helpers = "gpt_41_mini"
+
+api_version = os.getenv(f"MODEL_{secrets_helpers}_APIVERSION", "2025-01-01-preview")
+subscription_key = os.getenv(f"MODEL_{secrets_helpers}_KEY")
+endpoint = os.getenv(f"MODEL_{secrets_helpers}_ENDPOINT")
+
+client = AzureOpenAI(
+    api_version=api_version,
+    azure_endpoint=endpoint,
+    api_key=subscription_key)
 
 # Set page configuration
 st.set_page_config(
@@ -35,7 +45,7 @@ def main():
         if model == 'gpt-4.1-mini':
             st.header("KTP Extraction")
             st.divider()
-            ktp_extraction(model, azure_openai_key, endpoint)
+            ktp_extraction(model, client)
 
 if __name__ == "__main__":
     main()

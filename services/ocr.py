@@ -48,9 +48,9 @@ def ktp_extraction(model, client):
             try:
                 results = aoai_llm_inference(prompt, encode_data, client, model)
                 total_time = round((datetime.now() - start_time).total_seconds(),2)
+                st.success(f"Extraction successful in {total_time} seconds.")
             except:
-                st.write("Failed to make the request. Please try again. Don't forget to upload a document")
-                raise SystemExit(f"Failed to make the request.")
+                raise SystemExit(f"Failed to make the request. Please try again. Don't forget to upload a document")
 
         st.subheader('Result')
         tab_json, tab_table = st.tabs(["JSON", "TABLE"])
@@ -60,12 +60,6 @@ def ktp_extraction(model, client):
 
             try:
                 data_result = json.loads(result_tab1)
-                token = results['usage']
-                completion_tokens = token['completion_tokens']
-                prompt_tokens = token['prompt_tokens']
-                total_tokens = token['total_tokens']
-                total_cost = calculate_aoai_cost(model, prompt_tokens, completion_tokens) 
-                
             except:
                 try:
                     result_tab1 = re.search(r'{.*?}', result_tab1, re.DOTALL).group(0)
@@ -81,12 +75,18 @@ def ktp_extraction(model, client):
                 st.write("Failed to make the request. Please try again")
         with tab_json:
             try:
-                st.success(f"Extraction successful in {total_time} seconds.")
-                st.json(results["choices"][0]["message"]["content"])
+                st.json(result_tab1)
             except:
                 st.write("Failed to make the request. Please try again")
 
         st.divider()
+
+        token = results.usage
+        completion_tokens = token.completion_tokens
+        prompt_tokens = token.prompt_tokens
+        total_tokens = token.total_tokens
+        total_cost = calculate_aoai_cost(model, prompt_tokens, completion_tokens)
+
         
         a, b = st.columns(2)
         c, d = st.columns(2)
@@ -94,13 +94,3 @@ def ktp_extraction(model, client):
         b.metric(label="Input Tokens", value=prompt_tokens, border=True)
         c.metric(label="Cost ($)", value=str(total_cost), border=True)
         d.metric(label="Output Tokens", value=completion_tokens, border=True)
-
-        try:
-            filename = 'results/ktp.csv'
-            df_existing = pd.read_csv(filename)
-            df_new = pd.DataFrame([[uploaded_file.name,model_version, total_cost, total_time, prompt_tokens, completion_tokens, total_tokens]], columns=df_existing.columns)
-            pd.concat([df_existing, df_new], ignore_index=True).to_csv(filename, index=False)
-            print("csv updated")
-        except:
-            print("update csv failed")
-            pass
