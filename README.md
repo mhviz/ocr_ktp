@@ -1,109 +1,89 @@
 # OCR KTP
 
-A small Streamlit demo for extracting visible fields from an Indonesian KTP into JSON. It supports Apple's native on-device Foundation Models, an OpenAI-compatible local vision-model API (for example, Ollama on a Mac), and Azure OpenAI. Model output is unverified; always compare it with the original document.
+**A local-first document-AI prototype for extracting visible fields from Indonesian identity cards into structured JSON.** The project explores on-device Apple Foundation Models, OpenAI-compatible local vision APIs, and optional Azure OpenAI.
 
-## Overview
+> **Status: prototype.** Extraction is not guaranteed accurate, KTP authenticity is not checked, and this is not a production identity-verification system. Always verify results against the source document.
 
-This project extracts text from a KTP image or PDF and converts it into structured JSON fields such as NIK, name, address, date of birth, and other visible identity properties.
+## Demo
 
-It is designed as a proof-of-concept and local demo rather than a production-grade identity-verification system.
+<!-- Add a screenshot only after capturing it with synthetic or fully redacted sample data. -->
 
-## Why this project is useful
+_Add a sanitized screenshot here, for example `docs/images/app-demo.png`._
 
-- Quick local prototype for OCR on KTP documents
-- Works with local Mac hardware and local model servers
-- Good for demos, experiments, and portfolio work
-- Easy to extend with another document type or stricter validation layer
+The app flow is designed to let a user select a processing option, provide an image or PDF, and inspect structured field output. Do not publish screenshots containing real names, NIKs, addresses, faces, API keys, or other personal data.
 
-## Local setup on Mac
+## Project highlights
 
-### 1) Install Python and create a virtual environment
+- Indonesian KTP field extraction into a structured format
+- Exploration of local-first document AI on Apple silicon
+- Optional OpenAI-compatible local model endpoint and Azure workflow
+- Streamlit interface for experimentation and manual result review
+
+## Mac setup
+
+Requires Python 3.10+. Apple Foundation Models additionally require Apple silicon, macOS 26+, Swift/Xcode Command Line Tools, and an available on-device model.
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
-```
-
-### 2) Copy environment template
-
-```bash
-cp .env.final.example .env
-```
-
-### 3) Use the local Ollama model route
-
-Edit `.env` to set:
-
-```env
-LOCAL_OPENAI_BASE_URL=http://localhost:11434/v1
-LOCAL_OPENAI_API_KEY=ollama
-LOCAL_OPENAI_MODEL=qwen2.5vl:3b
-```
-
-### 4) Pull a vision-capable model
-
-```bash
-brew install ollama
-ollama pull qwen2.5vl:3b
-ollama list
-```
-
-### 5) Run the app
-
-```bash
+cp .env.example .env
 streamlit run app.py
 ```
 
-Select the local OpenAI-compatible option in the UI.
+For native Apple processing, choose the Apple Foundation Models option in the app. It requires no API URL. For a local OpenAI-compatible server such as Ollama, configure `.env` with a vision-capable model and the server's URL, for example:
 
-## Native Apple option
-
-If you are on macOS 26+ with Apple silicon, use the native Apple mode and choose:
-
-- Apple Foundation Models (on this Mac)
-
-This mode keeps OCR and model inference on-device and does not require a URL or API key.
-
-## Azure option
-
-The Azure path is optional and only for users who already have a valid Azure OpenAI deployment.
-
-```env
-AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-AZURE_OPENAI_API_KEY=your-key
-AZURE_OPENAI_API_VERSION=2025-01-01-preview
-AZURE_OPENAI_DEPLOYMENT=gpt-4.1-mini
+```dotenv
+LOCAL_OPENAI_BASE_URL=http://localhost:11434/v1
+LOCAL_OPENAI_API_KEY=ollama
+LOCAL_OPENAI_MODEL=<installed-vision-model>
 ```
 
-## Privacy note
+The local API must support image input. Verify the selected model and the current provider integration before processing documents; a local-looking URL alone does not guarantee local-only processing.
 
-KTP data is sensitive personal data. Use this project only for documents you are authorized to process. Always review the extracted results manually before using them for any decision-making.
+## Azure OpenAI (optional)
 
-## Validation
+Configure the Azure endpoint, API key, API version, and deployment in `.env` only if you intend to use Azure. In that mode, the document image is sent to the configured endpoint. Do not commit credentials.
+
+## Privacy and responsible use
+
+KTP data is sensitive personal information. Process only documents you are authorized to use. Prefer synthetic or redacted examples for development and demos. Review the selected provider's data handling and retention settings. This repository is a prototype and does not provide production authentication, compliance controls, or identity verification.
+
+## Development checks
 
 ```bash
 python -m unittest discover -s tests -v
-./scripts/validate_local_ocr.sh
+```
+
+If using an OpenAI-compatible local server, check its model listing with:
+
+```bash
+./scripts/check_local_model.sh
 ```
 
 ## Stack
 
-- Python
-- Streamlit
-- Pillow
-- pypdfium2
-- OpenAI-compatible local API / Ollama
-- Azure OpenAI (optional)
+Python · Streamlit · Pillow · pypdfium2 · Apple Vision/Foundation Models · OpenAI-compatible APIs · Azure OpenAI (optional)
 
-## Typical use cases
+## Repository structure
 
-- KTP OCR prototype
-- Structured field extraction demo
-- Local AI experimentation on Mac
-- Portfolio project for AI + document processing
+```text
+app.py                         Streamlit interface
+services/                      Document processing and model integration
+helpers/                        Shared helper functions
+scripts/                        Local setup and endpoint checks
+tests/                          Automated tests
+.env.example                    Safe configuration template
+SECURITY.md                     Security and privacy guidance
+```
 
-## Notes
+## Roadmap ideas
 
-This is a prototype and should not be treated as a production identity verification or compliance system.
+- Add a sanitized sample screenshot and short demo recording
+- Expand tests for image/PDF input and provider-specific responses
+- Evaluate extraction quality with consented, redacted or synthetic samples
+- Add explicit field-level confidence and human correction workflow
+- Document supported local model servers and their image-input requirements
+
+See [SECURITY.md](SECURITY.md) for security and privacy guidance.
