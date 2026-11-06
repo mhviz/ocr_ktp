@@ -3,3 +3,9 @@ AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 AZURE_OPENAI_API_KEY=replace-with-your-key
 AZURE_OPENAI_API_VERSION=2025-01-01-preview
 AZURE_OPENAI_DEPLOYMENT=gpt-4.1-mini
+
+# Optional OpenAI-compatible local model endpoint (for example, your Mac-hosted server).
+# Use a trusted endpoint. A URL alone does not ensure that processing remains on-device.
+LOCAL_OPENAI_BASE_URL=http://127.0.0.1:1234/v1
+LOCAL_OPENAI_API_KEY=local-not-required
+LOCAL_OPENAI_MODEL=your-local-model-name

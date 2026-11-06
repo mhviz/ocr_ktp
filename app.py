@@ -3,13 +3,13 @@ import platform
 
 import streamlit as st
 from dotenv import load_dotenv
-from openai import AzureOpenAI
+from openai import AzureOpenAI, OpenAI
 
 from services.ocr import (
     MAX_UPLOAD_BYTES,
     DocumentError,
     apple_foundation_model_inference,
-    azure_openai_inference,
+    openai_compatible_inference,
     prepare_document_image,
     validate_extraction,
 )
@@ -20,23 +20,29 @@ st.set_page_config(page_title="OCR KTP", layout="centered")
 st.title("KTP data extraction")
 st.warning(
     "KTP contains sensitive personal information. Only process documents you are "
-    "authorized to use. The local option keeps processing on this Mac; Azure "
-    "OpenAI sends the image to the Azure endpoint configured by you."
+    "authorized to use. Apple on-device mode keeps processing on this Mac. The "
+    "Azure and local-API modes send the image to their configured endpoints."
 )
 
-LOCAL_MODEL = "Apple Foundation Models (on this Mac)"
+APPLE_MODEL = "Apple Foundation Models (on this Mac)"
+LOCAL_API = "Local OpenAI-compatible API (Mac or LAN)"
 AZURE_MODEL = "Azure OpenAI"
-backend = st.radio("Processing option", [LOCAL_MODEL, AZURE_MODEL], horizontal=True)
+backend = st.radio("Processing option", [APPLE_MODEL, LOCAL_API, AZURE_MODEL], horizontal=True)
 
-if backend == LOCAL_MODEL:
+if backend == APPLE_MODEL:
     st.caption(
-        "Local mode uses Apple's Vision framework for OCR and Foundation Models "
-        "to structure the recognized text. It requires Apple silicon, macOS 26 or "
-        "later, and an available on-device model. The model receives OCR text, "
-        "not the original image."
+        "Uses Apple's Vision framework for OCR and Foundation Models to structure "
+        "recognized text locally. Requires Apple silicon, macOS 26 or later, Swift, "
+        "and an available on-device model. The model receives OCR text, not the image."
+    )
+elif backend == LOCAL_API:
+    st.caption(
+        "Sends the processed image to the OpenAI-compatible URL you configure. "
+        "Use a trusted local/LAN endpoint; this option is not automatically guaranteed "
+        "to stay on-device."
     )
 else:
-    st.caption("Azure mode sends the uploaded document image to your configured Azure OpenAI deployment.")
+    st.caption("Sends the processed image to the Azure endpoint you configure.")
 
 uploaded_file = st.file_uploader(
     "Upload one KTP image or PDF (maximum 10 MB; PDF first page only)",
@@ -59,11 +65,26 @@ else:
 if st.button("Extract fields", type="primary", disabled=(image_bytes is None or not authorized)):
     try:
         with st.spinner("Processing document…"):
-            if backend == LOCAL_MODEL:
+            if backend == APPLE_MODEL:
                 if platform.system() != "Darwin":
                     raise DocumentError("Apple Foundation Models are available only on macOS.")
                 raw_result = apple_foundation_model_inference(image_bytes)
                 usage = None
+            elif backend == LOCAL_API:
+                base_url = os.getenv("LOCAL_OPENAI_BASE_URL", "").strip()
+                if not base_url:
+                    raise DocumentError("Set LOCAL_OPENAI_BASE_URL in your .env file.")
+                client = OpenAI(
+                    base_url=base_url,
+                    api_key=os.getenv("LOCAL_OPENAI_API_KEY", "local-not-required").strip()
+                    or "local-not-required",
+                    timeout=120.0,
+                    max_retries=0,
+                )
+                deployment = os.getenv("LOCAL_OPENAI_MODEL", "local-model").strip()
+                response = openai_compatible_inference(image_bytes, client, deployment)
+                raw_result = response.choices[0].message.content or ""
+                usage = response.usage
             else:
                 endpoint = os.getenv("AZURE_OPENAI_ENDPOINT", "").strip()
                 api_key = os.getenv("AZURE_OPENAI_API_KEY", "").strip()
@@ -79,7 +100,7 @@ if st.button("Extract fields", type="primary", disabled=(image_bytes is None or 
                     max_retries=1,
                 )
                 deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-4.1-mini").strip()
-                response = azure_openai_inference(image_bytes, client, deployment)
+                response = openai_compatible_inference(image_bytes, client, deployment)
                 raw_result = response.choices[0].message.content or ""
                 usage = response.usage
 
@@ -90,7 +111,7 @@ if st.button("Extract fields", type="primary", disabled=(image_bytes is None or 
         st.table([{"Field": key, "Value": value} for key, value in result.items()])
         if usage is not None:
             st.caption(
-                f"Azure token usage: {usage.total_tokens} total "
+                f"Provider-reported token usage: {usage.total_tokens} total "
                 f"({usage.prompt_tokens} input, {usage.completion_tokens} output). "
                 "This is not a cost estimate."
             )

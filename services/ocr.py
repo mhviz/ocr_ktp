@@ -69,7 +69,7 @@ def prepare_document_image(filename: str, raw: bytes) -> tuple[bytes, Image.Imag
                 image = source.convert("RGB")
     except DocumentError:
         raise
-    except (UnidentifiedImageError, OSError, ValueError, Exception) as exc:
+    except Exception as exc:
         # Do not expose parser details or file contents in the UI.
         raise DocumentError("Could not read this image or PDF. Check that the file is valid.") from exc
 
@@ -109,13 +109,13 @@ def validate_extraction(raw_result: str) -> dict[str, str]:
     return result
 
 
-def azure_openai_inference(image_bytes: bytes, client, deployment: str):
-    """Send the document image to the explicitly selected Azure deployment."""
+def openai_compatible_inference(image_bytes: bytes, client, model: str):
+    """Send the document image to the selected OpenAI-compatible endpoint."""
     import base64
 
     encoded_image = base64.b64encode(image_bytes).decode("ascii")
     return client.chat.completions.create(
-        model=deployment,
+        model=model,
         messages=[
             {
                 "role": "system",
