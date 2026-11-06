@@ -1,25 +1,17 @@
-# function for calculate gpt-model cost
+"""Legacy cost helper. Use current Azure pricing for billing; this is only an estimate."""
+
+
+_PRICES_PER_MILLION_TOKENS = {
+    "gpt-4o": (2.50, 10.00),
+    "gpt-4o-mini": (0.15, 0.60),
+    "gpt-4.1-mini": (0.40, 1.60),
+}
+
+
 def calculate_aoai_cost(model, prompt_tokens, completion_tokens):
-    # Pricing per 1,000,000 tokens
-    if model == 'gpt-4o':
-        input_price_per_million = 2.5
-        output_price_per_million = 10 
-    elif model == 'gpt-4o-mini':
-        input_price_per_million = 0.15
-        output_price_per_million = 0.60
-    elif model == 'gpt-4.1-mini':
-        input_price_per_million = 0.40
-        output_price_per_million = 1.60
-
-    # Convert pricing to per token
-    input_price_per_token = input_price_per_million / 1_000_000
-    output_price_per_token = output_price_per_million / 1_000_000
-
-    # Calculate cost for each type of token
-    prompt_cost = prompt_tokens * input_price_per_token
-    completion_cost = completion_tokens * output_price_per_token
-
-    # Total cost
-    total_cost = prompt_cost + completion_cost
-
-    return total_cost
+    """Return a historical rough estimate; None for models without a configured rate."""
+    prices = _PRICES_PER_MILLION_TOKENS.get(model)
+    if prices is None:
+        return None
+    input_price, output_price = prices
+    return (prompt_tokens * input_price + completion_tokens * output_price) / 1_000_000

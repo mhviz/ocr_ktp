@@ -1,3 +1,5 @@
-MODEL_gpt_41_mini_ENDPOINT = "xxxxxxxxxxxxx.com"
-MODEL_gpt_41_mini_KEY = "xxxxxxx123535464"
-MODEL_gpt_41_mini_APIVERSION = "2025-01-01-preview"
+# Azure OpenAI is optional. Only required when Azure OpenAI is selected in the app.
+AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
+AZURE_OPENAI_API_KEY=replace-with-your-key
+AZURE_OPENAI_API_VERSION=2025-01-01-preview
+AZURE_OPENAI_DEPLOYMENT=gpt-4.1-mini
