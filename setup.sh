@@ -21,14 +21,11 @@ cat <<'EOF'
 Setup complete.
 
 Next steps:
-1. Edit .env if you want Azure or a local OpenAI-compatible endpoint.
-2. For local Ollama use:
-   - LOCAL_OPENAI_BASE_URL=http://localhost:11434/v1
-   - LOCAL_OPENAI_MODEL=<vision-capable model name>
-3. Start the app:
+1. Configure Apple Foundation Models with LOCAL_MAC_* or configure an OpenAI-compatible endpoint with OPENAI_* in .env.
+2. Start the app:
    streamlit run app.py
 
-For native Apple mode on macOS 26+:
+For native Apple Foundation Models:
 - install Xcode Command Line Tools with: xcode-select --install
-- then choose "Apple Foundation Models (on this Mac)" in the app
+- leave LOCAL_MAC_URL blank and choose Apple Foundation Models in the app
 EOF

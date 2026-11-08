@@ -1,6 +1,6 @@
 # OCR KTP
 
-**A local-first document-AI prototype for extracting visible fields from Indonesian identity cards into structured JSON.** The project explores on-device Apple Foundation Models, OpenAI-compatible local vision APIs, and optional Azure OpenAI.
+**A local-first document-AI prototype for extracting visible fields from Indonesian identity cards into structured JSON.** The project supports Apple's native on-device Foundation Model, a configurable Apple-compatible endpoint, and a general OpenAI-compatible API.
 
 > **Status: prototype.** Extraction is not guaranteed accurate, KTP authenticity is not checked, and this is not a production identity-verification system. Always verify results against the source document.
 
@@ -10,16 +10,16 @@
 
 _Add a sanitized screenshot here, for example `docs/images/app-demo.png`._
 
-The app flow is designed to let a user select a processing option, provide an image or PDF, and inspect structured field output. Do not publish screenshots containing real names, NIKs, addresses, or other personal information.
+The app flow lets you choose Apple Foundation Models or OpenAI-Compatible API; the configured model name from `.env` is shown in the provider choices. Do not publish screenshots containing real names, NIKs, addresses, or other personal information.
 
 ## Project highlights
 
 - Indonesian KTP field extraction into a structured format
-- Exploration of local-first document AI on Apple silicon
-- Optional OpenAI-compatible local model endpoint and Azure workflow
+- Apple Vision OCR and on-device Apple Foundation Models
+- Configurable OpenAI-compatible chat-completions endpoint
 - Streamlit interface for experimentation and manual result review
 
-## Mac setup
+## Setup
 
 Requires Python 3.10+. Apple processing additionally requires macOS and Swift/Xcode Command Line Tools. Native Apple Foundation Models require Apple silicon, macOS 26+, and an available on-device model.
 
@@ -32,29 +32,21 @@ cp .env.example .env
 streamlit run app.py
 ```
 
-For the native Apple model, leave `LOCAL_MAC_URL` blank and choose Apple Foundation Models in the app. To use your own OpenAI-compatible Apple local server, set its URL and exact model name in `.env`:
+Configure only the provider you plan to use in `.env`:
 
 ```dotenv
-LOCAL_MAC_URL=http://localhost:<port>/v1
-LOCAL_MAC_API_KEY=local
-LOCAL_MAC_MODEL=apple-foundationmodel
+LOCAL_MAC_URL=
+LOCAL_MAC_API_KEY=
+LOCAL_MAC_MODEL=
+
+OPENAI_BASE_URL=
+OPENAI_API_KEY=
+OPENAI_MODEL=
 ```
 
-In endpoint mode, Apple Vision performs OCR locally and only the recognized text is sent to the configured endpoint. The URL must use the exact address exposed by your local server; it typically ends in `/v1`. The endpoint must support OpenAI-compatible chat completions. Do not use a remote or untrusted endpoint for sensitive identity data.
+For **Apple Foundation Models**, leave `LOCAL_MAC_URL` blank to run the native on-device Foundation Model. To use an Apple-compatible server instead, set all `LOCAL_MAC_*` values. In that endpoint mode, Vision OCR runs locally and only recognized text is sent to the configured endpoint. The app displays `LOCAL_MAC_MODEL` in the Apple provider choice.
 
-For a local OpenAI-compatible vision server such as Ollama, configure `.env` separately:
-
-```dotenv
-LOCAL_OPENAI_BASE_URL=http://localhost:11434/v1
-LOCAL_OPENAI_API_KEY=ollama
-LOCAL_OPENAI_MODEL=<installed-vision-model>
-```
-
-The local API must support image input. Verify the selected model and the current provider integration before processing documents; a local-looking URL alone does not guarantee local-only processing.
-
-## Azure OpenAI (optional)
-
-Configure the Azure endpoint, API key, API version, and deployment in `.env` only if you intend to use Azure. In that mode, the document image is sent to the configured endpoint. Do not commit credentials.
+For **OpenAI-Compatible API**, set `OPENAI_BASE_URL` and `OPENAI_MODEL`; set `OPENAI_API_KEY` if the server requires authentication. The app displays `OPENAI_MODEL` in the provider choice. This endpoint receives the uploaded document image, so verify its privacy and data handling before processing KTPs.
 
 ## Privacy and responsible use
 
@@ -66,15 +58,9 @@ KTP data is sensitive personal information. Process only documents you are autho
 python -m unittest discover -s tests -v
 ```
 
-If using an OpenAI-compatible local server, check its model listing with:
-
-```bash
-./scripts/check_local_model.sh
-```
-
 ## Stack
 
-Python · Streamlit · Pillow · pypdfium2 · Apple Vision/Foundation Models · OpenAI-compatible APIs · Azure OpenAI (optional)
+Python · Streamlit · Pillow · pypdfium2 · Apple Vision/Foundation Models · OpenAI-compatible APIs
 
 ## Repository structure
 
@@ -87,13 +73,5 @@ tests/                          Automated tests
 .env.example                    Safe configuration template
 SECURITY.md                     Security and privacy guidance
 ```
-
-## Roadmap ideas
-
-- Add a sanitized sample screenshot and short demo recording
-- Expand tests for image/PDF input and provider-specific responses
-- Evaluate extraction quality with consented, redacted or synthetic samples
-- Add explicit field-level confidence and human correction workflow
-- Document supported local model servers and their image-input requirements
 
 See [SECURITY.md](SECURITY.md) for security and privacy guidance.
