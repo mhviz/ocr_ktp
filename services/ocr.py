@@ -1,3 +1,4 @@
+import base64
 import json
 import platform
 import re
@@ -114,8 +115,6 @@ def validate_extraction(raw_result: str) -> dict[str, str]:
 
 
 def openai_compatible_inference(image_bytes: bytes, client, model: str):
-    import base64
-
     encoded_image = base64.b64encode(image_bytes).decode("ascii")
     return client.chat.completions.create(
         model=model,
@@ -134,11 +133,44 @@ def openai_compatible_inference(image_bytes: bytes, client, model: str):
     )
 
 
-def apple_foundation_model_inference(image_bytes: bytes) -> str:
+def apple_vision_ocr(image_bytes: bytes) -> str:
+    """Run on-device Vision OCR and return text for a local Apple-model endpoint."""
     if platform.system() != "Darwin":
         raise DocumentError("Apple Foundation Models are available only on macOS.")
 
-    script = Path(__file__).resolve().parent / "services" / "apple_foundation_model.swift"
+    script = Path(__file__).resolve().with_name("apple_foundation_model.swift")
+    try:
+        with tempfile.TemporaryDirectory(prefix="ocr-ktp-") as temp_dir:
+            image_path = Path(temp_dir) / "document.jpg"
+            image_path.write_bytes(image_bytes)
+            completed = subprocess.run(
+                ["swift", str(script), "--ocr", str(image_path)],
+                capture_output=True,
+                text=True,
+                timeout=180,
+                check=False,
+            )
+    except FileNotFoundError as exc:
+        raise DocumentError("Swift is not installed. Install Xcode Command Line Tools on this Mac.") from exc
+    except subprocess.TimeoutExpired as exc:
+        raise DocumentError("Local OCR timed out. Try a smaller or clearer document.") from exc
+
+    if completed.returncode != 0:
+        detail = (completed.stderr or "").strip().splitlines()
+        message = detail[-1][:300] if detail else "Check that macOS and Vision are available."
+        raise DocumentError(f"Apple Vision OCR failed: {message}")
+    recognized_text = completed.stdout.strip()
+    if not recognized_text:
+        raise DocumentError("No text could be recognized in the document.")
+    return recognized_text
+
+
+def apple_foundation_model_inference(image_bytes: bytes) -> str:
+    """Use Apple's native on-device Foundation Model without an API-compatible server."""
+    if platform.system() != "Darwin":
+        raise DocumentError("Apple Foundation Models are available only on macOS.")
+
+    script = Path(__file__).resolve().with_name("apple_foundation_model.swift")
     try:
         with tempfile.TemporaryDirectory(prefix="ocr-ktp-") as temp_dir:
             image_path = Path(temp_dir) / "document.jpg"
@@ -156,7 +188,9 @@ def apple_foundation_model_inference(image_bytes: bytes) -> str:
         raise DocumentError("Local processing timed out. Try a smaller or cleaner document.") from exc
 
     if completed.returncode != 0:
-        raise DocumentError("Local Apple model processing failed. Check macOS/model availability and try again.")
+        detail = (completed.stderr or "").strip().splitlines()
+        message = detail[-1][:300] if detail else "Check macOS and on-device model availability."
+        raise DocumentError(f"Local Apple model processing failed: {message}")
     if not completed.stdout.strip():
         raise DocumentError("The local model returned no result. Please retry.")
     return completed.stdout.strip()

@@ -10,7 +10,7 @@
 
 _Add a sanitized screenshot here, for example `docs/images/app-demo.png`._
 
-The app flow is designed to let a user select a processing option, provide an image or PDF, and inspect structured field output. Do not publish screenshots containing real names, NIKs, addresses, faces, API keys, or other personal data.
+The app flow is designed to let a user select a processing option, provide an image or PDF, and inspect structured field output. Do not publish screenshots containing real names, NIKs, addresses, or other personal information.
 
 ## Project highlights
 
@@ -21,7 +21,7 @@ The app flow is designed to let a user select a processing option, provide an im
 
 ## Mac setup
 
-Requires Python 3.10+. Apple Foundation Models additionally require Apple silicon, macOS 26+, Swift/Xcode Command Line Tools, and an available on-device model.
+Requires Python 3.10+. Apple processing additionally requires macOS and Swift/Xcode Command Line Tools. Native Apple Foundation Models require Apple silicon, macOS 26+, and an available on-device model.
 
 ```bash
 python3 -m venv .venv
@@ -32,7 +32,17 @@ cp .env.example .env
 streamlit run app.py
 ```
 
-For native Apple processing, choose the Apple Foundation Models option in the app. It requires no API URL. For a local OpenAI-compatible server such as Ollama, configure `.env` with a vision-capable model and the server's URL, for example:
+For the native Apple model, leave `LOCAL_MAC_URL` blank and choose Apple Foundation Models in the app. To use your own OpenAI-compatible Apple local server, set its URL and exact model name in `.env`:
+
+```dotenv
+LOCAL_MAC_URL=http://localhost:<port>/v1
+LOCAL_MAC_API_KEY=local
+LOCAL_MAC_MODEL=apple-foundationmodel
+```
+
+In endpoint mode, Apple Vision performs OCR locally and only the recognized text is sent to the configured endpoint. The URL must use the exact address exposed by your local server; it typically ends in `/v1`. The endpoint must support OpenAI-compatible chat completions. Do not use a remote or untrusted endpoint for sensitive identity data.
+
+For a local OpenAI-compatible vision server such as Ollama, configure `.env` separately:
 
 ```dotenv
 LOCAL_OPENAI_BASE_URL=http://localhost:11434/v1
