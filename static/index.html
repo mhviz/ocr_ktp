@@ -3,87 +3,241 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101510">
+  <meta name="theme-color" content="#0a0f14">
   <meta name="description" content="Private, local-first Indonesian identity card extraction.">
-  <title>OCR KTP — Document intelligence</title>
+  <title>OCR KTP — Premium Document Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar">
-      <a class="brand" href="/" aria-label="OCR KTP home">
-        <span class="brand-mark">K</span>
-        <span class="brand-name">KTP<span>FLOW</span></span>
-      </a>
+      <div class="brand-row">
+        <a class="brand" href="/" aria-label="OCR KTP home">
+          <span class="brand-mark">K</span>
+          <span class="brand-name">KTP<span>FLOW</span></span>
+        </a>
+      </div>
+
       <div class="side-label">WORKSPACE</div>
-      <a class="nav-item active" href="/"><span class="nav-icon">◫</span>New extraction</a>
+      <nav class="nav-stack" aria-label="Main navigation">
+        <a class="nav-item active" href="/"><span class="nav-icon">▣</span>New extraction</a>
+        <a class="nav-item muted" href="#results-section"><span class="nav-icon">◌</span>Review output</a>
+      </nav>
+
       <div class="sidebar-bottom">
-        <div class="privacy-card"><span class="privacy-icon">✳</span><div><strong>Privacy first</strong><p>Your document is processed in memory and is not saved by this app.</p></div></div>
+        <div class="privacy-card">
+          <span class="privacy-icon">✦</span>
+          <div>
+            <strong>Privacy first</strong>
+            <p>Processed in memory only. Nothing is stored in the browser or server after the session.</p>
+          </div>
+        </div>
         <div class="side-foot"><span class="status-dot"></span> Secure local workspace</div>
       </div>
     </aside>
 
     <main class="main-content">
-      <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> New extraction</div><div class="top-pill"><span class="status-dot"></span> SYSTEM READY</div></header>
+      <header class="topbar">
+        <div class="breadcrumb">Workspace <span>/</span> KTP extraction</div>
+        <div class="top-pill"><span class="status-dot"></span> SYSTEM READY</div>
+      </header>
+
       <section class="page-heading">
-        <div><div class="eyebrow"><span class="eyebrow-line"></span> DOCUMENT INTELLIGENCE</div><h1>Identity, <span>organized.</span></h1><p class="heading-copy">Extract KTP details with precision. Review every field before you use it.</p></div>
-        <div class="heading-chip"><span class="sparkle">✳</span><div><strong>Built for privacy</strong><small>Local-first processing</small></div></div>
+        <div>
+          <div class="eyebrow"><span class="eyebrow-line"></span> DOCUMENT INTELLIGENCE</div>
+          <h1>Identity, <span>refined.</span></h1>
+          <p class="heading-copy">Premium KTP extraction for Apple on-device models and OpenAI-compatible local APIs.</p>
+        </div>
+        <div class="heading-chip">
+          <span class="sparkle">✦</span>
+          <div>
+            <strong>Local-first</strong>
+            <small>Private by design</small>
+          </div>
+        </div>
       </section>
 
-      <section class="stepper" aria-label="Extraction steps"><div class="step active"><span class="step-number">01</span><span>Choose model</span></div><i></i><div class="step"><span class="step-number">02</span><span>Upload document</span></div><i></i><div class="step"><span class="step-number">03</span><span>Review results</span></div></section>
+      <section class="status-strip">
+        <div class="status-item"><span class="mini-label">Provider</span><strong id="summary-provider">Apple Foundation Models</strong></div>
+        <div class="status-item"><span class="mini-label">Model</span><strong id="summary-model">native on-device</strong></div>
+        <div class="status-item"><span class="mini-label">Processing</span><strong id="summary-state">Ready</strong></div>
+      </section>
+
+      <section class="stepper" aria-label="Extraction steps">
+        <div class="step active"><span class="step-number">01</span><span>Select model</span></div>
+        <i></i>
+        <div class="step"><span class="step-number">02</span><span>Upload document</span></div>
+        <i></i>
+        <div class="step"><span class="step-number">03</span><span>Review result</span></div>
+      </section>
 
       <section class="content-grid">
         <div class="left-column">
           <section class="panel model-panel">
-            <div class="section-heading"><div><div class="section-kicker">STEP 01</div><h2>Choose your model</h2></div><span class="soft-badge">2 PROVIDERS</span></div>
-            <p class="section-copy">Select how you want to process your document.</p>
+            <div class="section-heading">
+              <div>
+                <div class="section-kicker">STEP 01</div>
+                <h2>Choose your model</h2>
+              </div>
+              <span class="soft-badge">2 PROVIDERS</span>
+            </div>
+            <p class="section-copy">Pick the model you want to use for extraction and validation.</p>
             <div id="provider-list" class="provider-list"><div class="loading-card">Loading available models…</div></div>
           </section>
 
           <section class="panel upload-panel">
-            <div class="section-heading"><div><div class="section-kicker">STEP 02</div><h2>Add your document</h2></div><span class="format-badge">JPG · PNG · PDF</span></div>
-            <p class="section-copy">Drop a clear image of the front of your KTP or browse your files.</p>
+            <div class="section-heading">
+              <div>
+                <div class="section-kicker">STEP 02</div>
+                <h2>Add your document</h2>
+              </div>
+              <span class="format-badge">JPG · PNG · PDF</span>
+            </div>
+            <p class="section-copy">Upload a clear image or PDF of the KTP front side.</p>
+
             <input id="file-input" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" hidden>
             <div id="dropzone" class="dropzone" role="button" tabindex="0" aria-label="Choose a KTP image or PDF">
-              <div class="upload-icon-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v4A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-4"/></svg></div>
-              <strong>Drop your document here</strong><span>or <button id="browse-button" class="text-button" type="button">browse files</button></span>
-              <small>Maximum file size: 10 MB</small>
+              <div class="upload-icon-wrap">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v4A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-4"/>
+                </svg>
+              </div>
+              <strong>Drop your document here</strong>
+              <span>or <button id="browse-button" class="text-button" type="button">browse files</button></span>
+              <small>Maximum 10 MB</small>
             </div>
-            <div id="file-card" class="file-card hidden"><div class="file-type">IMG</div><div class="file-meta"><strong id="file-name"></strong><span id="file-size"></span></div><button id="remove-file" class="icon-button" type="button" aria-label="Remove file">×</button></div>
+
+            <div id="file-card" class="file-card hidden">
+              <div class="file-type">IMG</div>
+              <div class="file-meta">
+                <strong id="file-name"></strong>
+                <span id="file-size"></span>
+              </div>
+              <button id="remove-file" class="icon-button" type="button" aria-label="Remove file">×</button>
+            </div>
+
             <div id="file-error" class="inline-error hidden"></div>
-            <button id="extract-button" class="primary-button" type="button" disabled><span class="button-sparkle">✳</span>Extract KTP details <span class="button-arrow">→</span></button>
-            <div class="upload-footnote"><span>▣</span> Files are processed in memory and never stored.</div>
+
+            <button id="extract-button" class="primary-button" type="button" disabled>
+              <span class="button-sparkle">✦</span>Extract KTP details <span class="button-arrow">→</span>
+            </button>
+
+            <div class="upload-footnote"><span>▣</span> Your document stays in memory and is not stored after processing.</div>
           </section>
         </div>
 
         <aside class="right-column">
           <section class="preview-panel">
-            <div class="preview-top"><span>DOCUMENT PREVIEW</span><span class="preview-live"><i></i> READY</span></div>
-            <div id="preview-empty" class="preview-empty"><div class="preview-art"><div class="art-card"><div class="art-top"><b></b><i></i></div><div class="art-photo"></div><div class="art-lines"><i></i><i></i><i></i><i></i></div></div><span class="art-sparkle">✳</span></div><strong>Your document, in focus.</strong><p>Upload an image or PDF to see a preview here.</p></div>
-            <div id="preview-image-wrap" class="preview-image-wrap hidden"><img id="preview-image" alt="Uploaded document preview"><div id="pdf-preview-label" class="pdf-preview-label hidden">PDF document selected</div></div>
+            <div class="preview-top">
+              <span>DOCUMENT PREVIEW</span>
+              <span class="preview-live"><i></i> READY</span>
+            </div>
+
+            <div id="preview-empty" class="preview-empty">
+              <div class="preview-art">
+                <div class="art-card">
+                  <div class="art-top"><b></b><i></i></div>
+                  <div class="art-photo"></div>
+                  <div class="art-lines"><i></i><i></i><i></i><i></i></div>
+                </div>
+                <span class="art-sparkle">✦</span>
+              </div>
+              <strong>Your document, in focus.</strong>
+              <p>Upload a file to preview it here before extraction.</p>
+            </div>
+
+            <div id="preview-image-wrap" class="preview-image-wrap hidden">
+              <img id="preview-image" alt="Uploaded document preview">
+              <div id="pdf-preview-label" class="pdf-preview-label hidden">PDF document selected</div>
+            </div>
+
             <div class="preview-bottom"><span><i class="status-dot"></i> PRIVATE SESSION</span><span>ENCRYPTED IN TRANSIT</span></div>
           </section>
-          <section class="note-card"><span class="note-icon">✦</span><div><strong>Accuracy starts with a clear scan</strong><p>Place your KTP on a flat surface with even lighting. Check extracted information against your original document.</p></div></section>
+
+          <section class="note-card">
+            <span class="note-icon">✦</span>
+            <div>
+              <strong>High-confidence capture</strong>
+              <p>Use good lighting and a flat surface. Always verify extracted values against the original KTP.</p>
+            </div>
+          </section>
         </aside>
       </section>
 
-      <section id="progress-panel" class="panel progress-panel hidden" aria-live="polite"><div class="progress-indicator"><span class="spinner"></span></div><div class="progress-copy"><strong id="progress-title">Working on your document…</strong><span id="progress-subtitle">Securely processing with your selected model.</span></div><div id="elapsed-live" class="elapsed-live">0.0s</div></section>
-
-      <section id="error-panel" class="error-panel hidden" role="alert"><span>!</span><div><strong>Extraction could not be completed</strong><p id="error-message"></p></div></section>
-
-      <section id="results-section" class="results-section hidden">
-        <div class="results-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> EXTRACTION COMPLETE</div><h2>Your results <span class="result-check">✓</span></h2><p>Review and edit each value against the original document.</p></div><button id="download-button" class="secondary-button" type="button"><span>↓</span> Download JSON</button></div>
-        <div class="metrics-row"><div class="metric-card"><span class="metric-label">TOTAL TIME</span><strong id="total-time">—</strong><small>Complete request, including upload</small></div><div class="metric-card"><span class="metric-label">MODEL PROCESSING</span><strong id="server-time">—</strong><small>Image preparation + model + validation</small></div><div class="metric-card"><span class="metric-label">MODEL USED</span><strong id="result-model">—</strong><small>Selected for this extraction</small></div><div class="metric-card"><span class="metric-label">FIELDS FOUND</span><strong id="fields-count">—</strong><small>Values detected in the document</small></div></div>
-        <div class="results-card"><div class="results-card-heading"><div><strong>Extracted KTP details</strong><span>Click any field to review or correct it</span></div><span class="editable-tag">EDITABLE</span></div><div id="fields-grid" class="fields-grid"></div></div>
-        <div class="results-disclaimer"><span>ⓘ</span> Model output may contain mistakes. Always verify every value against the original document.</div>
+      <section id="progress-panel" class="panel progress-panel hidden" aria-live="polite">
+        <div class="progress-indicator"><span class="spinner"></span></div>
+        <div class="progress-copy">
+          <strong id="progress-title">Working on your document…</strong>
+          <span id="progress-subtitle">Securely processing with your selected model.</span>
+        </div>
+        <div id="elapsed-live" class="elapsed-live">0.0s</div>
       </section>
 
-      <footer class="page-footer"><span>© KTPFLOW <span id="year"></span></span><span>EXPERIMENTAL TOOL · NOT FOR IDENTITY VERIFICATION</span></footer>
+      <section id="error-panel" class="error-panel hidden" role="alert">
+        <span>!</span>
+        <div>
+          <strong>Extraction could not be completed</strong>
+          <p id="error-message"></p>
+        </div>
+      </section>
+
+      <section id="results-section" class="results-section hidden">
+        <div class="results-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> EXTRACTION COMPLETE</div>
+            <h2>Your result <span class="result-check">✓</span></h2>
+            <p>Review and adjust values before exporting.</p>
+          </div>
+          <button id="download-button" class="secondary-button" type="button"><span>↓</span> Download JSON</button>
+        </div>
+
+        <div class="metrics-row">
+          <div class="metric-card">
+            <span class="metric-label">TOTAL TIME</span>
+            <strong id="total-time">—</strong>
+            <small>Full end-to-end request</small>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">PROCESSING</span>
+            <strong id="server-time">—</strong>
+            <small>Model + validation</small>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">MODEL USED</span>
+            <strong id="result-model">—</strong>
+            <small>Selected provider</small>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">FIELDS FOUND</span>
+            <strong id="fields-count">—</strong>
+            <small>Filled values</small>
+          </div>
+        </div>
+
+        <div class="results-card">
+          <div class="results-card-heading">
+            <div>
+              <strong>Extracted KTP details</strong>
+              <span>Review every field before use</span>
+            </div>
+            <span class="editable-tag">EDITABLE</span>
+          </div>
+          <div id="fields-grid" class="fields-grid"></div>
+        </div>
+
+        <div class="results-disclaimer"><span>ⓘ</span> Model output can be imperfect. Verify each field against the original document before sharing or storing it.</div>
+      </section>
+
+      <footer class="page-footer">
+        <span>© KTPFLOW <span id="year"></span></span>
+        <span>EXPERIMENTAL TOOL · NOT FOR IDENTITY VERIFICATION</span>
+      </footer>
     </main>
   </div>
+
   <script src="/static/app.js" defer></script>
 </body>
 </html>
