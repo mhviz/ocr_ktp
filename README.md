@@ -8,7 +8,7 @@
 
 - Premium responsive web interface (FastAPI + HTML/CSS/JavaScript; no Streamlit)
 - Apple Foundation Models or OpenAI-Compatible API, with model names loaded from `.env`
-- Image/PDF upload, editable extracted fields, JSON download, and elapsed-time display
+- Image/PDF upload, editable extracted fields, copy/download JSON, and elapsed-time display
 - Input checks and local-first processing options
 
 ## Setup
@@ -45,7 +45,11 @@ Start the app:
 uvicorn app:app --reload
 ```
 
-Then open <http://127.0.0.1:8000>. The provider cards show the model name loaded from `.env`. The result view displays both end-to-end browser time and server-side processing time.
+Then open <http://127.0.0.1:8000>. The provider cards show the model name loaded from `.env`. The result view displays total end-to-end time and server processing time, and lets you copy or download the edited JSON.
+
+## Apple hardware acceleration
+
+Vision OCR and Apple's Foundation Models use Apple's system frameworks, which choose and schedule available hardware acceleration automatically. This app does not force GPU-only execution: Apple does not expose a supported GPU-priority switch for these high-level Vision/Foundation Models APIs. On Apple silicon, the system may distribute work across the GPU, Neural Engine, and CPU depending on the operation, OS version, and runtime. If `LOCAL_MAC_URL` points to a separate OpenAI-compatible server, hardware selection for model inference is controlled by that server; this app only runs Vision OCR locally before sending recognized text to it.
 
 ## Privacy and responsible use
 
