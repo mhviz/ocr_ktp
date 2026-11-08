@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from services.ocr import (
+    EXTRACTION_PROMPT,
     DocumentError,
     apple_foundation_model_inference,
     apple_vision_ocr,
@@ -69,6 +70,15 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+
+def mask_value(value: str, key: str) -> str:
+    """Mask sensitive values in the field-level review cards."""
+    if not value:
+        return ""
+    if key.lower() == "nik" and len(value) >= 8:
+        return value[:4] + "******" + value[-2:]
+    return value[:2] + ("*" * max(0, len(value) - 2)) if len(value) > 4 else "*" * len(value)
 
 
 def configured_model(env_name: str, fallback: str) -> str:
