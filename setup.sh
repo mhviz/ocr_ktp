@@ -21,11 +21,12 @@ cat <<'EOF'
 Setup complete.
 
 Next steps:
-1. Configure Apple Foundation Models with LOCAL_MAC_* or configure an OpenAI-compatible endpoint with OPENAI_* in .env.
-2. Start the app:
-   streamlit run app.py
+1. Configure Apple Foundation Models with LOCAL_MAC_* or an OpenAI-compatible endpoint with OPENAI_* in .env.
+2. Start the premium web app:
+   uvicorn app:app --reload
+3. Open http://127.0.0.1:8000
 
 For native Apple Foundation Models:
 - install Xcode Command Line Tools with: xcode-select --install
-- leave LOCAL_MAC_URL blank and choose Apple Foundation Models in the app
+- leave LOCAL_MAC_URL blank
 EOF

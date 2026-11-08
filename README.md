@@ -1,23 +1,15 @@
 # OCR KTP
 
-**A local-first document-AI prototype for extracting visible fields from Indonesian identity cards into structured JSON.** The project supports Apple's native on-device Foundation Model, a configurable Apple-compatible endpoint, and a general OpenAI-compatible API.
+**A local-first document-AI app for extracting visible fields from Indonesian identity cards into structured JSON.** Choose Apple's on-device Foundation Model or an OpenAI-compatible API, review extracted fields, and see the total processing time.
 
 > **Status: prototype.** Extraction is not guaranteed accurate, KTP authenticity is not checked, and this is not a production identity-verification system. Always verify results against the source document.
 
-## Demo
+## Features
 
-<!-- Add a screenshot only after capturing it with synthetic or fully redacted sample data. -->
-
-_Add a sanitized screenshot here, for example `docs/images/app-demo.png`._
-
-The app flow lets you choose Apple Foundation Models or OpenAI-Compatible API; the configured model name from `.env` is shown in the provider choices. Do not publish screenshots containing real names, NIKs, addresses, or other personal information.
-
-## Project highlights
-
-- Indonesian KTP field extraction into a structured format
-- Apple Vision OCR and on-device Apple Foundation Models
-- Configurable OpenAI-compatible chat-completions endpoint
-- Streamlit interface for experimentation and manual result review
+- Premium responsive web interface (FastAPI + HTML/CSS/JavaScript; no Streamlit)
+- Apple Foundation Models or OpenAI-Compatible API, with model names loaded from `.env`
+- Image/PDF upload, editable extracted fields, JSON download, and elapsed-time display
+- Input checks and local-first processing options
 
 ## Setup
 
@@ -29,10 +21,9 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 cp .env.example .env
-streamlit run app.py
 ```
 
-Configure only the provider you plan to use in `.env`:
+Configure the provider(s) you intend to use in `.env`:
 
 ```dotenv
 LOCAL_MAC_URL=
@@ -44,13 +35,21 @@ OPENAI_API_KEY=
 OPENAI_MODEL=
 ```
 
-For **Apple Foundation Models**, leave `LOCAL_MAC_URL` blank to run the native on-device Foundation Model. To use an Apple-compatible server instead, set all `LOCAL_MAC_*` values. In that endpoint mode, Vision OCR runs locally and only recognized text is sent to the configured endpoint. The app displays `LOCAL_MAC_MODEL` in the Apple provider choice.
+For **Apple Foundation Models**, leave `LOCAL_MAC_URL` blank to use Apple's native on-device model. To use an Apple-compatible server instead, provide the `LOCAL_MAC_*` settings. In that mode, Vision OCR runs on the Mac and recognized text is sent to the configured endpoint.
 
-For **OpenAI-Compatible API**, set `OPENAI_BASE_URL` and `OPENAI_MODEL`; set `OPENAI_API_KEY` if the server requires authentication. The app displays `OPENAI_MODEL` in the provider choice. This endpoint receives the uploaded document image, so verify its privacy and data handling before processing KTPs.
+For **OpenAI-Compatible API**, set `OPENAI_BASE_URL` and `OPENAI_MODEL`, and set `OPENAI_API_KEY` if required by the server. The uploaded document image is sent to this endpoint; verify its privacy and data handling before processing KTPs.
+
+Start the app:
+
+```bash
+uvicorn app:app --reload
+```
+
+Then open <http://127.0.0.1:8000>. The provider cards show the model name loaded from `.env`. The result view displays both end-to-end browser time and server-side processing time.
 
 ## Privacy and responsible use
 
-KTP data is sensitive personal information. Process only documents you are authorized to use. Prefer synthetic or redacted examples for development and demos. Review the selected provider's data handling and retention settings. This repository is a prototype and does not provide production authentication, compliance controls, or identity verification.
+KTP data is sensitive personal information. Process only documents you are authorized to use. Prefer synthetic or redacted examples for development and demos. Review the selected provider's data handling and retention settings. Uploaded files are processed in memory and are not saved by this app. This repository is a prototype and does not provide production authentication, compliance controls, or identity verification. Do not expose it publicly without adding appropriate access controls.
 
 ## Development checks
 
@@ -60,13 +59,14 @@ python -m unittest discover -s tests -v
 
 ## Stack
 
-Python · Streamlit · Pillow · pypdfium2 · Apple Vision/Foundation Models · OpenAI-compatible APIs
+Python · FastAPI · HTML/CSS/JavaScript · Pillow · pypdfium2 · Apple Vision/Foundation Models · OpenAI-compatible APIs
 
 ## Repository structure
 
 ```text
-app.py                         Streamlit interface
+app.py                         FastAPI application and inference routes
 services/                      Document processing and model integration
+static/                         Premium browser UI
 helpers/                        Shared helper functions
 scripts/                        Local setup and endpoint checks
 tests/                          Automated tests
