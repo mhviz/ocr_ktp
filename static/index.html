@@ -22,8 +22,7 @@
       </div>
       <div class="side-label">WORKSPACE</div>
       <nav class="nav-stack" aria-label="Main navigation">
-        <a class="nav-item active" href="/"><span class="nav-icon">▣</span>New extraction</a>
-        <a class="nav-item muted" href="#results-section"><span class="nav-icon">◌</span>Review output</a>
+        <a class="nav-item active" href="/"><span class="nav-icon">▣</span>Workspace</a>
       </nav>
       <div class="sidebar-bottom">
         <div class="privacy-card"><span class="privacy-icon">✦</span><div><strong>Privacy first</strong><p>Processed in memory only. Nothing is stored in the browser or server after the session.</p></div></div>
@@ -73,19 +72,19 @@
         <aside class="right-column">
           <section class="preview-panel">
             <div class="preview-top"><span>DOCUMENT PREVIEW</span><span class="preview-live"><i></i> READY</span></div>
-            <div id="preview-empty" class="preview-empty"><div class="preview-art"><div class="art-card"><div class="art-top"><b></b><i></i></div><div class="art-photo"></div><div class="art-lines"><i></i><i></i><i></i><i></i></div></div><span class="art-sparkle">✦</span></div><strong>Your document, in focus.</strong><p>Upload a file to preview it here before extraction.</p></div>
-            <div id="preview-image-wrap" class="preview-image-wrap hidden"><img id="preview-image" alt="Uploaded document preview"><div id="pdf-preview-label" class="pdf-preview-label hidden">PDF document selected</div></div>
+            <div id="preview-empty" class="preview-empty"><div class="preview-art"><div class="art-card"><div class="art-top"><b></b><i></i></div><div class="art-photo"></div><div class="art-lines"><i></i><i></i><i></i><i></i></div><span class="art-sparkle">✦</span></div></div><strong>Preview will appear here</strong><p>Upload a KTP image or PDF to inspect it before extraction.</p></div>
+            <div id="preview-image-wrap" class="preview-image-wrap hidden"><img id="preview-image" alt="Uploaded document preview"><div id="pdf-preview-label" class="pdf-preview-label hidden">PDF preview</div></div>
             <div class="preview-bottom"><span><i class="status-dot"></i> PRIVATE SESSION</span><span>ENCRYPTED IN TRANSIT</span></div>
           </section>
-          <section class="note-card"><span class="note-icon">✦</span><div><strong>High-confidence capture</strong><p>Use good lighting and a flat surface. Always verify extracted values against the original KTP.</p></div></section>
+          <section class="note-card"><span class="note-icon">✦</span><div><strong>High-confidence capture</strong><p>Use good lighting and a flat surface. Always verify extracted values against the original document before sharing or storing them.</p></div></section>
         </aside>
       </section>
 
-      <section id="progress-panel" class="panel progress-panel hidden" aria-live="polite"><div class="progress-indicator"><span class="spinner"></span></div><div class="progress-copy"><strong id="progress-title">Working on your document…</strong><span id="progress-subtitle">Securely processing with your selected model.</span></div><div id="elapsed-live" class="elapsed-live">0.0s</div></section>
+      <section id="progress-panel" class="panel progress-panel hidden" aria-live="polite"><div class="progress-indicator"><span class="spinner"></span></div><div class="progress-copy"><strong id="progress-title">Working on your document…</strong><span id="progress-subtitle">Securely processing with your selected model.</span><span id="elapsed-live" class="elapsed-live">0.0 s</span></div></section>
       <section id="error-panel" class="error-panel hidden" role="alert"><span>!</span><div><strong>Extraction could not be completed</strong><p id="error-message"></p></div></section>
 
       <section id="results-section" class="results-section hidden">
-        <div class="results-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> EXTRACTION COMPLETE</div><h2>Your result <span class="result-check">✓</span></h2><p>Review and adjust values before exporting.</p></div>
+        <div class="results-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> EXTRACTION COMPLETE</div><h2>Your result <span class="result-check">✓</span></h2><p>Review and adjust the extracted values before sharing.</p></div>
           <div class="result-actions"><button id="copy-json-button" class="secondary-button" type="button"><span>▣</span> Copy JSON</button><button id="download-button" class="secondary-button" type="button"><span>↓</span> Download JSON</button></div>
         </div>
         <div id="copy-status" class="copy-status hidden" role="status" aria-live="polite"></div>
